@@ -1,0 +1,25 @@
+/*
+ * Modulo: Gestión de Incidencias
+ * Archivo: /assets/css/gestion_incidencias_cargar.css
+ * Proposito: Estilos específicos para la vista de carga de archivos y el modal.
+ * Version: 0.0.1 - Ajustes visuales de los input-group.
+ */
+
+/* Hacemos que los input readonly parezcan activos pero ineditables */
+#display_shopify, 
+#display_cedcommerce, 
+#display_ebay {
+    cursor: not-allowed;
+    background-color: #f8f9fa !important;
+    color: #495057;
+    font-weight: 500;
+}
+
+/* Efectos hover para los grids de archivos subidos */
+.grid-archivo {
+    transition: all 0.2s ease-in-out;
+}
+.grid-archivo:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}

@@ -3,14 +3,14 @@
  * Modulo: Gestión de Incidencias
  * Archivo: /views/includes/sidebar_gestion.php
  * Proposito: Menú lateral de opciones para el módulo de incidencias.
- * Version: 0.0.7 - Ajuste exacto de opciones solicitadas.
+ * Version: 0.0.9 - 'Principal' apunta correctamente al index del módulo.
  */
 ?>
 <div class="bg-dark text-white p-3" style="min-width: 250px; min-height: 100vh;">
     <h5 class="text-info border-bottom pb-2">Gestión de Incidencias</h5>
     <ul class="nav flex-column mt-3">
         <li class="nav-item mb-1">
-            <a href="index.php?route=incidencias&action=index" class="nav-link text-white">🏠 Inicio</a>
+            <a href="index.php?route=incidencias&action=index" class="nav-link text-white">🏠 Principal</a>
         </li>
         <li class="nav-item mb-1">
             <a href="index.php?route=incidencias&action=cargar" class="nav-link text-white">📥 Cargar Archivos</a>

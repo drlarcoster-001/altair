@@ -1,0 +1,17 @@
+/*
+ * Modulo: Análisis de Inventario
+ * Archivo: /assets/css/analisis_inventario_cargar.css
+ * Proposito: Estilos específicos para la vista de carga de inventarios.
+ * Version: 0.0.1
+ */
+
+input[readonly] {
+    cursor: not-allowed;
+    background-color: #f8f9fa !important;
+    color: #495057;
+    font-size: 0.85rem;
+}
+
+.btn-warning {
+    color: #000;
+}
