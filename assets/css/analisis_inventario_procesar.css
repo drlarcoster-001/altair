@@ -1,0 +1,18 @@
+/*
+ * Modulo: Análisis de Inventario
+ * Archivo: /assets/css/analisis_inventario_procesar.css
+ * Proposito: Animaciones de carga.
+ * Version: 0.0.1
+ */
+
+@keyframes spin { 
+    100% { transform: rotate(360deg); } 
+}
+
+.gear-icon { 
+    font-size: 50px; 
+    display: inline-block; 
+    animation: spin 2s linear infinite; 
+    color: #ffc107; 
+    margin-bottom: 15px;
+}
