@@ -1,39 +1,27 @@
-<div class="container py-5 text-center">
-    <h1 class="mb-5">Bienvenido al Sistema Altair</h1>
+<?php
+/**
+ * Modulo: Dashboard Principal
+ * Archivo: /views/dashboard.php
+ * Proposito: Pantalla inicial de bienvenida con las tarjetas de acceso a los módulos.
+ * Version: 0.0.1 - Interfaz de selección de módulos.
+ */
+?>
+<div class="container mt-5">
+    <h2 class="text-center mb-5">Seleccione un Módulo</h2>
+    
     <div class="row justify-content-center g-4">
-        
         <div class="col-md-5">
-            <div class="card shadow-lg border-0 h-100" style="cursor:pointer;" onclick="confirmNav('incidencias')">
-                <div class="card-body py-5 text-primary">
-                    <h2 class="fw-bold">Gestión de Incidencias</h2>
-                    <p class="text-muted">Tickets y soporte técnico</p>
-                </div>
+            <div class="card p-5 text-center shadow-sm card-modulo" onclick="navegarModulo('incidencias')">
+                <h3 class="text-primary fw-bold">Gestión de Incidencias</h3>
+                <p class="text-muted mt-2">Comparativa de productos Shopify vs eBay</p>
             </div>
         </div>
 
         <div class="col-md-5">
-            <div class="card shadow-lg border-0 h-100" style="cursor:pointer;" onclick="confirmNav('inventario')">
-                <div class="card-body py-5 text-success">
-                    <h2 class="fw-bold">Análisis de Inventario</h2>
-                    <p class="text-muted">Control de stock y activos</p>
-                </div>
+            <div class="card p-5 text-center shadow-sm card-modulo" onclick="navegarModulo('inventario')">
+                <h3 class="text-success fw-bold">Análisis de Inventario</h3>
+                <p class="text-muted mt-2">Control y gestión de existencias</p>
             </div>
         </div>
-
     </div>
 </div>
-
-<script>
-function confirmNav(target) {
-    Swal.fire({
-        title: 'Accediendo...',
-        text: 'Cargando módulo de ' + target,
-        icon: 'info',
-        timer: 800,
-        showConfirmButton: false,
-        didClose: () => {
-            window.location.href = 'index.php?route=' + target;
-        }
-    });
-}
-</script>

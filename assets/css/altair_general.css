@@ -1,0 +1,19 @@
+/*
+ * Modulo: Assets / CSS Global
+ * Archivo: /assets/css/altair_general.css
+ * Proposito: Reglas de estilo globales y maquetación estructural.
+ * Version: 0.0.1 - Flexbox para layout.
+ */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.wrapper-principal {
+    min-height: calc(100vh - 56px); /* 56px es aprox la altura del topnav */
+}
+
+#main-content {
+    background-color: #f8f9fa;
+    width: 100%;
+}
