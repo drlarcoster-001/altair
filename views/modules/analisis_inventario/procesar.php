@@ -1,14 +1,15 @@
 <?php
 /**
  * Modulo: Análisis de Inventario
- * Archivo: /views/modules/analisis_inventario/procesar.php
- * Proposito: Interfaz de procesamiento de los 4 archivos con validación de fechas.
- * Version: 0.0.1 - Inclusión de campos de fecha y 4 modales.
+ * Archivo: views/modules/analisis_inventario/procesar.php
+ * Proposito: Interfaz técnica para el procesamiento masivo de inventarios. Permite definir rangos de fecha, ejecutar la lectura de archivos CSV hacia las tablas temporales (Shopify/eBay) y ofrece previsualización de datos procesados con opción de exportación a Excel.
+ * Version: 1.0.0 - Implementación de 4 grids con botones de visualizar y descargar Excel por tabla.
  */
 
 require_once "controllers/InventoryBatchController.php";
 require_once "controllers/InventoryProcessController.php";
 
+// Se obtiene la información del lote para validar rutas de archivos físicos
 $ultimaCarga = InventoryBatchController::ctrObtenerUltimaCarga();
 
 $archivosFisicosExisten = false;
@@ -21,123 +22,114 @@ if ($ultimaCarga) {
     );
 }
 
+// Consultar el estado actual de las tablas temporales
 $totShop1 = InventoryProcessController::ctrObtenerConteo('tbl_shopify1');
 $totEbay1 = InventoryProcessController::ctrObtenerConteo('tbl_ebay1');
 $totShop2 = InventoryProcessController::ctrObtenerConteo('tbl_shopify2');
 $totEbay2 = InventoryProcessController::ctrObtenerConteo('tbl_ebay2');
 
+// Se considera que hay datos procesados si la tabla principal de Shopify 1 tiene registros
 $hayProcesados = ($totShop1 > 0);
 ?>
 
-<div class="container-fluid">
+<div class="container-fluid py-4">
 
     <div class="card shadow-sm border-0 mb-4">
-        <div class="card-header bg-dark text-white fw-bold">
-            <h5 class="mb-0">⚙️ Archivos Listos para Procesar</h5>
-        </div>
-        <div class="card-body">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0"><i class="bi bi-cpu-fill me-2"></i> Procesamiento de Inventario Activo</h5>
             <?php if($ultimaCarga): ?>
-                
-                <div class="row mb-3 border-bottom pb-3">
-                    <div class="col-md-12">
-                        <p class="mb-1"><strong>Lote de Carga:</strong> <?php echo $ultimaCarga['batch_name']; ?></p>
-                        <p class="mb-1"><strong>Fecha de subida:</strong> <?php echo date("d/m/Y H:i", strtotime($ultimaCarga['created_at'])); ?></p>
+                <span class="badge bg-success">Lote: <?php echo htmlspecialchars($ultimaCarga['batch_name']); ?></span>
+            <?php endif; ?>
+        </div>
+        <div class="card-body p-4">
+            <?php if($ultimaCarga): ?>
+                <div class="row g-3">
+                    <div class="col-md-6 border-end">
+                        <p class="mb-1 text-muted small uppercase fw-bold">Información del Lote</p>
+                        <h5 class="mb-0 text-dark"><?php echo htmlspecialchars($ultimaCarga['batch_name']); ?></h5>
+                        <p class="text-muted small mb-0">Subido el: <?php echo date("d/m/Y H:i", strtotime($ultimaCarga['created_at'])); ?></p>
                     </div>
-                </div>
-
-                <div class="row align-items-end mb-2">
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold text-secondary">Fecha Inicio <span class="text-danger">*</span></label>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold text-secondary small">Fecha Inicio Auditoría</label>
                         <input type="date" class="form-control" id="fecha_inicio" value="<?php echo $ultimaCarga['fecha_inicio'] ?? ''; ?>">
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold text-secondary">Fecha Fin <span class="text-danger">*</span></label>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold text-secondary small">Fecha Fin Auditoría</label>
                         <input type="date" class="form-control" id="fecha_fin" value="<?php echo $ultimaCarga['fecha_fin'] ?? ''; ?>">
                     </div>
                 </div>
 
                 <?php if(!$archivosFisicosExisten): ?>
-                    <div class="alert alert-danger mt-3 mb-0 border-0 shadow-sm">
-                        <strong>⚠️ Archivos Extraviados:</strong> El registro existe, pero los 4 archivos no se encuentran en <code>C:\TEMP</code>.
+                    <div class="alert alert-danger mt-4 mb-0 border-0 shadow-sm">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Archivos no encontrados:</strong> Se detecta el registro en BD, pero los archivos físicos han sido movidos o eliminados de <code>C:\TEMP</code>.
                     </div>
                 <?php endif; ?>
 
             <?php else: ?>
-                <div class="alert alert-warning mb-0 border-0 shadow-sm">
-                    <strong>ℹ️ Sin carga activa:</strong> Ve a "Cargar Archivos" primero.
+                <div class="text-center py-3">
+                    <p class="text-muted mb-3">No hay un lote de archivos disponible para procesar.</p>
+                    <a href="index.php?route=inventario&action=cargar" class="btn btn-primary btn-sm">Ir a Carga de Archivos</a>
                 </div>
             <?php endif; ?>
         </div>
     </div>
 
-    <div class="d-flex gap-2 mb-5">
-        <a href="index.php?route=inventario&action=index" class="btn btn-secondary">← Volver</a>
+    <div class="d-flex align-items-center gap-2 mb-4">
+        <a href="index.php?route=inventario&action=index" class="btn btn-outline-secondary px-4">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
         
         <?php if($ultimaCarga && $archivosFisicosExisten): ?>
-            <button type="button" class="btn btn-warning fw-bold text-dark px-4" onclick="iniciarProcesamiento()">▶️ Procesar</button>
-        <?php else: ?>
-            <button type="button" class="btn btn-secondary px-4" disabled>▶️ Procesar</button>
+            <button type="button" class="btn btn-warning fw-bold text-dark px-4 shadow-sm" onclick="iniciarProcesamiento()">
+                <i class="bi bi-play-fill"></i> Iniciar Procesamiento CSV
+            </button>
         <?php endif; ?>
 
         <?php if($hayProcesados): ?>
-            <button type="button" class="btn btn-danger fw-bold text-white px-4" onclick="limpiarTablas()">🗑️ Limpiar</button>
-            <a href="index.php?route=inventario&action=reportes" class="btn btn-info fw-bold text-dark px-4 ms-auto">👁️ Ver Reportes</a>
-        <?php else: ?>
-            <button type="button" class="btn btn-secondary px-4 ms-auto" disabled>👁️ Ver Reportes</button>
+            <button type="button" class="btn btn-danger fw-bold text-white px-4 shadow-sm" onclick="limpiarTablas()">
+                <i class="bi bi-eraser-fill"></i> Limpiar Tablas
+            </button>
+            <a href="index.php?route=inventario&action=reportes" class="btn btn-info fw-bold text-dark px-4 ms-auto shadow-sm">
+                Analizar Discrepancias <i class="bi bi-arrow-right-short"></i>
+            </a>
         <?php endif; ?>
     </div>
 
     <?php if($hayProcesados): ?>
-        <h4 class="mb-3 text-secondary border-bottom pb-2">Vista Previa de Tablas Procesadas</h4>
+        <h5 class="mb-4 text-secondary"><i class="bi bi-table me-2"></i> Datos Importados Correctamente</h5>
         <div class="row g-4">
             
-            <div class="col-md-3">
-                <div class="card border-success shadow-sm">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-success mb-0 fw-bold">Shopify 1</h6>
-                            <small class="text-muted"><?php echo number_format($totShop1); ?> reg</small>
-                        </div>
-                        <button class="btn btn-sm btn-outline-success rounded-circle" data-bs-toggle="modal" data-bs-target="#modalS1">👁️</button>
-                    </div>
-                </div>
-            </div>
+            <?php 
+                $cards = [
+                    ['id' => 'S1', 'tab' => 'tbl_shopify1', 'color' => 'success', 'title' => 'Shopify Snapshot 1', 'total' => $totShop1],
+                    ['id' => 'E1', 'tab' => 'tbl_ebay1', 'color' => 'danger', 'title' => 'eBay Snapshot 1', 'total' => $totEbay1],
+                    ['id' => 'S2', 'tab' => 'tbl_shopify2', 'color' => 'primary', 'title' => 'Shopify Snapshot 2', 'total' => $totShop2],
+                    ['id' => 'E2', 'tab' => 'tbl_ebay2', 'color' => 'warning', 'title' => 'eBay Snapshot 2', 'total' => $totEbay2]
+                ];
 
+                foreach($cards as $c):
+            ?>
             <div class="col-md-3">
-                <div class="card border-danger shadow-sm">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-danger mb-0 fw-bold">eBay 1</h6>
-                            <small class="text-muted"><?php echo number_format($totEbay1); ?> reg</small>
+                <div class="card border-0 shadow-sm border-top border-4 border-<?php echo $c['color']; ?> h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h6 class="fw-bold mb-0"><?php echo $c['title']; ?></h6>
+                            <span class="badge bg-light text-dark border"><?php echo number_format($c['total']); ?> SKU</span>
                         </div>
-                        <button class="btn btn-sm btn-outline-danger rounded-circle" data-bs-toggle="modal" data-bs-target="#modalE1">👁️</button>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                            <button class="btn btn-sm btn-<?php echo $c['color']; ?> <?php echo ($c['id']=='E2')?'text-dark':'text-white'; ?> flex-fill" data-bs-toggle="modal" data-bs-target="#modal<?php echo $c['id']; ?>">
+                                <i class="bi bi-eye"></i> Visualizar
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="exportarExcel('<?php echo $c['tab']; ?>')" title="Descargar en Excel">
+                                <i class="bi bi-file-earmark-excel"></i> Excel
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-3">
-                <div class="card border-primary shadow-sm">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-primary mb-0 fw-bold">Shopify 2</h6>
-                            <small class="text-muted"><?php echo number_format($totShop2); ?> reg</small>
-                        </div>
-                        <button class="btn btn-sm btn-outline-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#modalS2">👁️</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card border-warning shadow-sm">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-warning text-dark mb-0 fw-bold">eBay 2</h6>
-                            <small class="text-muted"><?php echo number_format($totEbay2); ?> reg</small>
-                        </div>
-                        <button class="btn btn-sm btn-outline-warning rounded-circle" data-bs-toggle="modal" data-bs-target="#modalE2">👁️</button>
-                    </div>
-                </div>
-            </div>
+            <?php endforeach; ?>
 
         </div>
     <?php endif; ?>
@@ -146,32 +138,41 @@ $hayProcesados = ($totShop1 > 0);
 
 <?php if($hayProcesados): ?>
     <?php 
-        $tablas = [
-            'S1' => ['nombre' => 'tbl_shopify1', 'color' => 'success', 'titulo' => 'Shopify 1'],
-            'E1' => ['nombre' => 'tbl_ebay1', 'color' => 'danger', 'titulo' => 'eBay 1'],
-            'S2' => ['nombre' => 'tbl_shopify2', 'color' => 'primary', 'titulo' => 'Shopify 2'],
-            'E2' => ['nombre' => 'tbl_ebay2', 'color' => 'warning text-dark', 'titulo' => 'eBay 2']
-        ];
-        
-        foreach($tablas as $id => $info):
-            $previa = InventoryProcessController::ctrObtenerPrevia($info['nombre']);
+        foreach($cards as $c):
+            $previa = InventoryProcessController::ctrObtenerPrevia($c['tab']);
     ?>
-    <div class="modal fade" id="modal<?php echo $id; ?>" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-<?php echo $info['color']; ?>">
-                    <h5 class="modal-title <?php echo ($id=='E2')?'text-dark':'text-white'; ?>">Previsualización: <?php echo $info['titulo']; ?></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal fade" id="modal<?php echo $c['id']; ?>" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-<?php echo $c['color']; ?> <?php echo ($c['id']=='E2')?'text-dark':'text-white'; ?>">
+                    <h5 class="modal-title fw-bold">Vista Previa: <?php echo $c['title']; ?></h5>
+                    <button type="button" class="btn-close <?php echo ($c['id']!='E2')?'btn-close-white':''; ?>" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body table-responsive">
-                    <table class="table table-bordered table-striped table-sm">
-                        <thead class="table-dark"><tr><th>ID</th><th>SKU</th><th>Title</th><th>Inventory</th></tr></thead>
+                <div class="modal-body p-0">
+                    <table class="table table-hover table-striped mb-0 small">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="ps-3">ID</th>
+                                <th>SKU (Identificador)</th>
+                                <th>Título del Producto</th>
+                                <th class="text-center">Inventario</th>
+                            </tr>
+                        </thead>
                         <tbody>
-                            <?php 
-                            foreach($previa as $row) { echo "<tr><td>{$row['id']}</td><td>{$row['sku']}</td><td>{$row['title']}</td><td>{$row['inventory']}</td></tr>"; }
-                            ?>
+                            <?php foreach($previa as $row): ?>
+                                <tr>
+                                    <td class="ps-3 text-muted"><?php echo $row['id']; ?></td>
+                                    <td class="fw-bold"><?php echo htmlspecialchars($row['sku']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['title']); ?></td>
+                                    <td class="text-center bg-light fw-bold"><?php echo $row['inventory']; ?></td>
+                                </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <span class="me-auto text-muted small">Mostrando los primeros 5 registros cargados.</span>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>

@@ -1,9 +1,9 @@
 <?php
 /**
- * Modulo: Análisis de Inventario / Modelo
- * Archivo: /models/InventoryProcessModel.php
- * Proposito: Vaciar, insertar masivamente y consultar las 4 tablas temporales.
- * Version: 0.0.1 - Transacciones PDO.
+ * Modulo: Análisis de Inventario
+ * Archivo: models/InventoryProcessModel.php
+ * Proposito: Gestionar las operaciones de base de datos para el procesamiento de inventario. Incluye el vaciado de tablas temporales (Truncate), la inserción masiva mediante transacciones PDO y la recuperación de registros (incluyendo el ID) para visualizaciones en grid y reportes de exportación.
+ * Version: 1.0.3 - Se corrige el error de "Undefined array key" incluyendo la columna 'id' en los SELECT y se asegura la persistencia de las fechas de auditoría en la tabla inventory_batches.
  */
 
 if(!class_exists('Conexion')) {
@@ -12,7 +12,9 @@ if(!class_exists('Conexion')) {
 
 class InventoryProcessModel {
 
-    // 1. Vaciar las 4 tablas
+    /**
+     * Vacía las 4 tablas temporales para iniciar un proceso de carga limpio.
+     */
     public static function mdlVaciarTablas() {
         $conexion = Conexion::conectar();
         try {
@@ -26,7 +28,9 @@ class InventoryProcessModel {
         }
     }
 
-    // 2. Guardar Fechas en el Lote
+    /**
+     * Actualiza el registro maestro del lote con el rango de fechas de la auditoría.
+     */
     public static function mdlActualizarFechasLote($id, $fecha_inicio, $fecha_fin) {
         $conexion = Conexion::conectar();
         $stmt = $conexion->prepare("UPDATE inventory_batches SET fecha_inicio = :inicio, fecha_fin = :fin WHERE id = :id");
@@ -34,19 +38,25 @@ class InventoryProcessModel {
         return "ok";
     }
 
-    // 3. Inserción Masiva Genérica (Sirve para las 4 tablas ya que tienen misma estructura)
+    /**
+     * Inserta masivamente los datos mapeados desde los CSV en la tabla correspondiente.
+     */
     public static function mdlInsertarDatos($tabla, $datos) {
+        if (empty($datos)) return "ok";
+
         $conexion = Conexion::conectar();
         try {
             $conexion->beginTransaction();
             $stmt = $conexion->prepare("INSERT INTO $tabla (sku, title, inventory) VALUES (:sku, :title, :inventory)");
+            
             foreach ($datos as $fila) {
                 $stmt->execute([
-                    'sku' => $fila['sku'], 
-                    'title' => $fila['title'], 
+                    'sku'       => $fila['sku'], 
+                    'title'     => $fila['title'], 
                     'inventory' => $fila['inventory']
                 ]);
             }
+            
             $conexion->commit();
             return "ok";
         } catch (PDOException $e) {
@@ -55,19 +65,35 @@ class InventoryProcessModel {
         }
     }
 
-    // 4. Vista Previa y Conteos
+    /**
+     * Obtiene los primeros 5 registros para la previsualización en los modales de la interfaz.
+     * Incluye la columna 'id' para sincronización con los elementos de la vista.
+     */
     public static function mdlObtenerVistaPrevia($tabla) {
         $conexion = Conexion::conectar();
-        $stmt = $conexion->prepare("SELECT * FROM $tabla LIMIT 5");
+        $stmt = $conexion->prepare("SELECT id, sku, title, inventory FROM $tabla LIMIT 5");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Obtiene la totalidad de registros de una tabla para la generación de reportes CSV/Excel.
+     */
+    public static function mdlObtenerTodo($tabla) {
+        $conexion = Conexion::conectar();
+        $stmt = $conexion->prepare("SELECT id, sku, title, inventory FROM $tabla");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Retorna el conteo total de filas en una tabla de resultados.
+     */
     public static function mdlContarRegistros($tabla) {
         $conexion = Conexion::conectar();
         $stmt = $conexion->prepare("SELECT COUNT(*) as total FROM $tabla");
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado ? $resultado['total'] : 0;
     }
 }
-?>

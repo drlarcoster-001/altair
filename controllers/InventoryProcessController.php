@@ -1,9 +1,9 @@
 <?php
 /**
- * Modulo: Análisis de Inventario / Controlador
- * Archivo: /controllers/InventoryProcessController.php
- * Proposito: Leer 4 CSV, mapear columnas Shopify/eBay y enviarlas a BD.
- * Version: 0.0.1 - Parseo con actualización de fechas.
+ * Modulo: Análisis de Inventario
+ * Archivo: controllers/InventoryProcessController.php
+ * Proposito: Controlador de orquestación para el procesamiento de archivos. Captura fechas de auditoría, limpia las tablas de resultados, mapea columnas dinámicamente por nombre desde los archivos CSV (Shopify/eBay) y gestiona la exportación de reportes a Excel mediante peticiones GET.
+ * Version: 1.0.3 - Implementación de mapeo dinámico por nombres de columna ("SKU", "Available quantity", etc.) y sincronización de persistencia de fechas en el lote maestro.
  */
 
 if(!class_exists('InventoryProcessModel')) require_once __DIR__ . "/../models/InventoryProcessModel.php";
@@ -15,71 +15,100 @@ class InventoryProcessController {
 }
 
 /* =======================================================
-   RECEPTOR AJAX (Desde JS)
+    RECEPTOR DE PETICIONES (GET/POST)
    ======================================================= */
+
+// --- MANEJO DE DESCARGAS EXCEL (GET) ---
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
+    if ($_GET['action'] == 'exportar_excel') {
+        $tabla = $_GET['tabla'] ?? '';
+        $tablasPermitidas = ['tbl_shopify1', 'tbl_ebay1', 'tbl_shopify2', 'tbl_ebay2'];
+        
+        if (!in_array($tabla, $tablasPermitidas)) die("Acceso no autorizado.");
+
+        $datos = InventoryProcessModel::mdlObtenerTodo($tabla);
+        $filename = "Export_" . str_replace('tbl_', '', $tabla) . "_" . date('Ymd_His') . ".csv";
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $filename);
+        
+        $output = fopen('php://output', 'w');
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM para Excel
+        fputcsv($output, ['ID', 'SKU', 'Title', 'Inventory']);
+
+        foreach ($datos as $f) {
+            fputcsv($output, [$f['id'], $f['sku'], $f['title'], $f['inventory']]);
+        }
+        fclose($output);
+        exit;
+    }
+}
+
+// --- MANEJO DE PROCESAMIENTO (POST AJAX) ---
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     
-    // --- ACCIÓN: PROCESAR ARCHIVOS ---
     if ($_POST['action'] == 'ejecutar_procesamiento') {
         $fecha_inicio = $_POST['fecha_inicio'];
         $fecha_fin = $_POST['fecha_fin'];
 
         $carga = InventoryBatchModel::mdlObtenerUltimaCarga("inventory_batches");
         if (!$carga) {
-            echo json_encode(["status" => "error", "message" => "No hay archivos cargados."]); exit;
+            echo json_encode(["status" => "error", "message" => "No hay lote activo."]); exit;
         }
 
-        $fShop1 = $carga['shopify1_file_path'];
-        $fEbay1 = $carga['ebay1_file_path'];
-        $fShop2 = $carga['shopify2_file_path'];
-        $fEbay2 = $carga['ebay2_file_path'];
-
-        if (!file_exists($fShop1) || !file_exists($fEbay1) || !file_exists($fShop2) || !file_exists($fEbay2)) {
-            echo json_encode(["status" => "error", "message" => "Faltan archivos físicos en C:\\TEMP."]); exit;
-        }
-
-        // 1. Vaciar Tablas y Actualizar Fechas
+        // 1. Limpieza de tablas y persistencia de fechas en el lote 
         InventoryProcessModel::mdlVaciarTablas();
         InventoryProcessModel::mdlActualizarFechasLote($carga['id'], $fecha_inicio, $fecha_fin);
 
-        // 2. Función Lector CSV
-        function procesarCSV($ruta, $tipo) {
-            $datos = [];
+        /**
+         * Lector de CSV con Mapeo por Nombre de Columna solicitado 
+         */
+        function procesarCSVConMapeo($ruta, $tipo) {
+            $resultado = [];
             if (($handle = fopen($ruta, "r")) !== FALSE) {
-                $row = 0;
+                $headers = fgetcsv($handle, 10000, ",");
+                if (!$headers) return [];
+
+                // Definición de nombres exactos según tipo
+                if ($tipo == 'shopify') {
+                    $colSKU = "SKU"; $colTitle = "Title"; $colInv = "12405 Northwest 39th Avenue";
+                } else {
+                    $colSKU = "Custom label (SKU)"; $colTitle = "Title"; $colInv = "Available quantity";
+                }
+
+                $idxSKU = array_search($colSKU, $headers);
+                $idxTitle = array_search($colTitle, $headers);
+                $idxInv = array_search($colInv, $headers);
+
                 while (($data = fgetcsv($handle, 10000, ",")) !== FALSE) {
-                    $row++;
-                    if ($row == 1) continue; 
-                    
-                    if ($tipo == 'shopify') {
-                        // Shopify: SKU(I=8), Title(B=1), Inventory(L=11)
-                        $datos[] = ['sku' => isset($data[8]) ? trim($data[8]) : '', 'title' => isset($data[1]) ? trim($data[1]) : '', 'inventory' => isset($data[11]) ? (int)$data[11] : 0];
-                    } elseif ($tipo == 'ebay') {
-                        // eBay: SKU(D=3), Title(B=1), Inventory(E=4)
-                        $datos[] = ['sku' => isset($data[3]) ? trim($data[3]) : '', 'title' => isset($data[1]) ? trim($data[1]) : '', 'inventory' => isset($data[4]) ? (int)$data[4] : 0];
-                    }
+                    $resultado[] = [
+                        'sku'       => ($idxSKU !== false && isset($data[$idxSKU])) ? trim($data[$idxSKU]) : '',
+                        'title'     => ($idxTitle !== false && isset($data[$idxTitle])) ? trim($data[$idxTitle]) : '',
+                        'inventory' => ($idxInv !== false && isset($data[$idxInv])) ? (int)$data[$idxInv] : 0
+                    ];
                 }
                 fclose($handle);
             }
-            return $datos;
+            return $resultado;
         }
 
-        // 3. Ejecutar Inserciones
-        InventoryProcessModel::mdlInsertarDatos('tbl_shopify1', procesarCSV($fShop1, 'shopify'));
-        InventoryProcessModel::mdlInsertarDatos('tbl_ebay1', procesarCSV($fEbay1, 'ebay'));
-        InventoryProcessModel::mdlInsertarDatos('tbl_shopify2', procesarCSV($fShop2, 'shopify'));
-        InventoryProcessModel::mdlInsertarDatos('tbl_ebay2', procesarCSV($fEbay2, 'ebay'));
+        // 2. Ejecución secuencial de la importación
+        try {
+            InventoryProcessModel::mdlInsertarDatos('tbl_shopify1', procesarCSVConMapeo($carga['shopify1_file_path'], 'shopify'));
+            InventoryProcessModel::mdlInsertarDatos('tbl_ebay1', procesarCSVConMapeo($carga['ebay1_file_path'], 'ebay'));
+            InventoryProcessModel::mdlInsertarDatos('tbl_shopify2', procesarCSVConMapeo($carga['shopify2_file_path'], 'shopify'));
+            InventoryProcessModel::mdlInsertarDatos('tbl_ebay2', procesarCSVConMapeo($carga['ebay2_file_path'], 'ebay'));
 
-        echo json_encode(["status" => "success", "message" => "Proceso culminado"]);
+            echo json_encode(["status" => "success", "message" => "Los 4 archivos han sido cargados y procesados."]);
+        } catch (Exception $e) {
+            echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+        }
         exit;
     }
 
-    // --- ACCIÓN: LIMPIAR TABLAS ---
     if ($_POST['action'] == 'limpiar_tablas') {
-        $respuesta = InventoryProcessModel::mdlVaciarTablas();
-        if ($respuesta == "ok") echo json_encode(["status" => "success", "message" => "Tablas limpiadas correctamente."]);
-        else echo json_encode(["status" => "error", "message" => "Error al vaciar tablas."]);
+        $res = InventoryProcessModel::mdlVaciarTablas();
+        echo json_encode(["status" => ($res == "ok" ? "success" : "error"), "message" => $res]);
         exit;
     }
 }
-?>
