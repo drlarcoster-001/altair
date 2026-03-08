@@ -1,9 +1,9 @@
 <?php
 /**
- * Modulo: Análisis de Inventario / Modelo
- * Archivo: /models/InventoryBatchModel.php
+ * Modulo: Análisis de Inventario
+ * Archivo: models/InventoryBatchModel.php
  * Proposito: Manejar las operaciones de BD para la tabla inventory_batches.
- * Version: 0.0.1 - Inserción, consulta y eliminación para 4 archivos.
+ * Version: 1.0.2
  */
 
 if(!class_exists('Conexion')) {
@@ -12,9 +12,15 @@ if(!class_exists('Conexion')) {
 
 class InventoryBatchModel {
 
+    /**
+     * Registrar un nuevo lote con las rutas de los 4 archivos renombrados.
+     */
     public static function mdlRegistrarLote($tabla, $datos) {
         $conexion = Conexion::conectar();
-        $stmt = $conexion->prepare("INSERT INTO $tabla (batch_name, shopify1_file_path, ebay1_file_path, shopify2_file_path, ebay2_file_path) VALUES (:batch_name, :shopify1, :ebay1, :shopify2, :ebay2)");
+        
+        // Las columnas corresponden a tu estructura de db_altair.sql 
+        $stmt = $conexion->prepare("INSERT INTO $tabla (batch_name, shopify1_file_path, ebay1_file_path, shopify2_file_path, ebay2_file_path) 
+                                    VALUES (:batch_name, :shopify1, :ebay1, :shopify2, :ebay2)");
 
         $stmt->bindParam(":batch_name", $datos["batch_name"], PDO::PARAM_STR);
         $stmt->bindParam(":shopify1", $datos["shopify1"], PDO::PARAM_STR);
@@ -22,10 +28,18 @@ class InventoryBatchModel {
         $stmt->bindParam(":shopify2", $datos["shopify2"], PDO::PARAM_STR);
         $stmt->bindParam(":ebay2", $datos["ebay2"], PDO::PARAM_STR);
 
-        if ($stmt->execute()) return "ok";
-        else return "error";
+        if ($stmt->execute()) {
+            return "ok";
+        } else {
+            // Útil para depuración durante el desarrollo
+            // return $stmt->errorInfo(); 
+            return "error";
+        }
     }
 
+    /**
+     * Obtener el último registro de carga para mostrar en la vista.
+     */
     public static function mdlObtenerUltimaCarga($tabla) {
         $conexion = Conexion::conectar();
         $stmt = $conexion->prepare("SELECT * FROM $tabla ORDER BY id DESC LIMIT 1");
@@ -33,6 +47,9 @@ class InventoryBatchModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Obtener los datos de un lote específico (usado para eliminar archivos físicos).
+     */
     public static function mdlObtenerCargaPorId($tabla, $id) {
         $conexion = Conexion::conectar();
         $stmt = $conexion->prepare("SELECT * FROM $tabla WHERE id = :id");
@@ -41,13 +58,18 @@ class InventoryBatchModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Eliminar el registro del lote.
+     */
     public static function mdlEliminarLote($tabla, $id) {
         $conexion = Conexion::conectar();
         $stmt = $conexion->prepare("DELETE FROM $tabla WHERE id = :id");
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         
-        if ($stmt->execute()) return "ok";
-        else return "error";
+        if ($stmt->execute()) {
+            return "ok";
+        } else {
+            return "error";
+        }
     }
 }
-?>

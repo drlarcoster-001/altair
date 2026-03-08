@@ -3,17 +3,18 @@
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com
 
-[.]              [..]             [assets]         [config]
-[controllers]    [db]             estructura.txt   index.php
-[models]         [views]          
-               2 archivos          1.428 bytes
+[.]                  [..]                 [assets]
+[config]             [controllers]        [db]
+estructura.txt       estructura0703.txt   index.php
+[models]             [views]              
+               3 archivos         22.602 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git
 
 [..]             COMMIT_EDITMSG   config           description
 HEAD             [hooks]          index            [info]
-[logs]           [objects]        [refs]           
-               5 archivos          5.768 bytes
+[logs]           [objects]        ORIG_HEAD        [refs]
+               6 archivos          5.941 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\hooks
 
@@ -35,7 +36,7 @@ update.sample
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\logs
 
 [.]    HEAD   [refs] 
-               1 archivos          1.246 bytes
+               1 archivos          2.108 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\logs\refs
 
@@ -45,7 +46,7 @@ update.sample
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\logs\refs\heads
 
 [.]    [..]   main   
-               1 archivos          1.052 bytes
+               1 archivos          1.914 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\logs\refs\remotes
 
@@ -55,19 +56,35 @@ update.sample
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\logs\refs\remotes\origin
 
 [.]    [..]   main   
-               1 archivos            624 bytes
+               1 archivos          1.092 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects
 
-[.]    [09]   [0a]   [0e]   [12]   [13]   [15]   [18]   [1b]   [1e]   [22]
-[25]   [26]   [28]   [29]   [32]   [34]   [35]   [39]   [41]   [44]   [47]
-[4b]   [4e]   [51]   [54]   [59]   [5a]   [5c]   [5d]   [64]   [65]   [68]
-[6a]   [73]   [7c]   [7d]   [7e]   [7f]   [83]   [85]   [86]   [87]   [88]
-[94]   [98]   [99]   [9a]   [9c]   [9e]   [a0]   [a3]   [a9]   [ad]   [af]
-[b2]   [b6]   [c3]   [c5]   [c7]   [c8]   [cb]   [d0]   [d1]   [d7]   [df]
-[e1]   [e3]   [e6]   [ea]   [ec]   [ed]   [ee]   [f2]   [f7]   [f8]   [fa]
-[fe]   [ff]   [info] [pack] 
+[.]    [01]   [05]   [09]   [0a]   [0c]   [0e]   [12]   [13]   [15]   [17]
+[18]   [19]   [1b]   [1e]   [20]   [22]   [25]   [26]   [28]   [29]   [32]
+[34]   [35]   [39]   [41]   [43]   [44]   [47]   [48]   [4b]   [4e]   [51]
+[54]   [59]   [5a]   [5c]   [5d]   [64]   [65]   [68]   [6a]   [6b]   [73]
+[7c]   [7d]   [7e]   [7f]   [83]   [85]   [86]   [87]   [88]   [8e]   [94]
+[98]   [99]   [9a]   [9c]   [9e]   [a0]   [a3]   [a9]   [ad]   [af]   [b2]
+[b3]   [b6]   [ba]   [c3]   [c5]   [c7]   [c8]   [ca]   [cb]   [ce]   [d0]
+[d1]   [d6]   [d7]   [db]   [df]   [e0]   [e1]   [e3]   [e5]   [e6]   [e9]
+[ea]   [ec]   [ed]   [ee]   [f2]   [f6]   [f7]   [f8]   [f9]   [fa]   [fe]
+[ff]   [info] [pack] 
                0 archivos              0 bytes
+
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\01
+
+[.]
+[..]
+ce6e6eb0f0c622980206886acee1443b2c4b38
+               1 archivos            272 bytes
+
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\05
+
+[.]
+[..]
+c1d90202991c350be8ea95ad38ce0d8d62a201
+               1 archivos      1.527.950 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\09
 
@@ -84,6 +101,13 @@ b59caf07cf50011c136c10cd8f61e9e71917cb
 [..]
 cdd7f0f194c20d09ad0a8dabbc0b9cf7811d1e
                1 archivos            280 bytes
+
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\0c
+
+[.]
+[..]
+8f68c0cb39a9dcdc74dc98da12c171a69351f8
+               1 archivos            320 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\0e
 
@@ -114,12 +138,28 @@ cdd7f0f194c20d09ad0a8dabbc0b9cf7811d1e
 bf72c44c2feffed00b4bb36da9aa4263597630
                2 archivos            283 bytes
 
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\17
+
+[.]
+[..]
+cb5514929b9da37f142fc8fd63cf8f0ee33473
+               1 archivos          5.474 bytes
+
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\18
 
 [.]
 [..]
+4aea6e2807509fbb940eb4c8ef5593adfa4765
 4b723382882b937aca3fcd447a92fbc58fa8a4
-               1 archivos            211 bytes
+               2 archivos            432 bytes
+
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\19
+
+[.]
+[..]
+c6dc2ecbf7873e76ddb0b094ae5596be6d2c44
+ef74eaaef3a67a13b74422e8713cc943326e5c
+               2 archivos          4.315 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\1b
 
@@ -135,6 +175,13 @@ bf72c44c2feffed00b4bb36da9aa4263597630
 51e547c4f3f020d29980f0d039f40ae82d0302
                1 archivos            102 bytes
 
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\20
+
+[.]
+[..]
+312fa40c151cc6ec166b7bd0b0d438a634cb2c
+               1 archivos          4.888 bytes
+
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\22
 
 [.]
@@ -147,8 +194,9 @@ bf72c44c2feffed00b4bb36da9aa4263597630
 
 [.]
 [..]
+a1378664610c2301677700972d3b4b37916917
 da483397d99fb9ad12efb83f41eaa860aac2b0
-               1 archivos            208 bytes
+               2 archivos            311 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\26
 
@@ -178,8 +226,9 @@ b63992d69849b06cdfc0016ef1cdbda35bfce5
 [.]
 [..]
 497a1c99e801413a5cc727f2e48142ad4ef652
+8c7f8280b686d6f054a17bb2b854047616b1c1
 b58a2ae4e654a14e2726098b59345fd2cc17a1
-               2 archivos          2.480 bytes
+               3 archivos          2.780 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\34
 
@@ -209,6 +258,13 @@ b58a2ae4e654a14e2726098b59345fd2cc17a1
 79236d3f50570024a76b6a2e89cf8efd0d757d
                1 archivos            213 bytes
 
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\43
+
+[.]
+[..]
+62d5d51ea3b6f9528d2226a29d0878fba4b099
+               1 archivos            273 bytes
+
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\44
 
 [.]
@@ -220,8 +276,18 @@ b58a2ae4e654a14e2726098b59345fd2cc17a1
 
 [.]
 [..]
+24b02f5195a42cb2ca8f2f75c7161b8c7eaeb6
+9e3e23364edf1ad9d54cd0f6ffed10f0257cf4
 ade3f3d53acf33f70061a8d20f33c04db09373
-               1 archivos            228 bytes
+d05ed3c2312d970f887a2409878872c763ae5b
+               4 archivos          2.330 bytes
+
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\48
+
+[.]
+[..]
+9940d1af11d7de8ab33ae6cfaf985a42291e87
+               1 archivos            102 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\4b
 
@@ -255,8 +321,9 @@ f1544a176210d3f0360031910e2e5fc34f92d8
 
 [.]
 [..]
+c7bdd4e4e476f4462980d60531eb45af85974c
 f7e0376a39ba08a77a399961f034df3ce36263
-               1 archivos            517 bytes
+               2 archivos            728 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\5a
 
@@ -307,6 +374,13 @@ da6b94fff5b33007f071755025f7080fedd3e3
 [..]
 5119f87a89e8620c54fe667bcebfb43bd7fb98
                1 archivos             72 bytes
+
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\6b
+
+[.]
+[..]
+5eb76daa78e74b56e2567c2c8414a1348e8db5
+               1 archivos            214 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\73
 
@@ -381,6 +455,13 @@ fb0b5a5df0c0c6a01168ed97c0c6b7eca0e49b
 67d380c227cf9d0b27dc5508ca6722eefac67a
                1 archivos            989 bytes
 
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\8e
+
+[.]
+[..]
+81be5513df2531be4c2588083e4cccdedf905b
+               1 archivos            342 bytes
+
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\94
 
 [.]
@@ -407,7 +488,8 @@ fb0b5a5df0c0c6a01168ed97c0c6b7eca0e49b
 [.]
 [..]
 44cdf7b8686e1e8621f40c353ba9ccc7f9cbbc
-               1 archivos            199 bytes
+d8fc102fa48f5b0fefd88ac81aabcfb6a43b59
+               2 archivos            420 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\9c
 
@@ -468,12 +550,26 @@ a31a69f50bc0bff2e2c687ccebba1021f54f09
 ed586022dacc2b6a92859ca2b3a85283a5dbda
                2 archivos          1.921 bytes
 
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\b3
+
+[.]
+[..]
+5d8f71443640fe362c7330d79ec05bd9177730
+               1 archivos            274 bytes
+
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\b6
 
 [.]
 [..]
 043bcd00ef740658e877f9716d62e71e8ec6f2
                1 archivos            550 bytes
+
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\ba
+
+[.]
+[..]
+f81bb6642736159af0eeab4a47407945bd919b
+               1 archivos             71 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\c3
 
@@ -503,12 +599,27 @@ ed586022dacc2b6a92859ca2b3a85283a5dbda
 ee7039e58565a048dff0c68c88d950e759ef82
                1 archivos            150 bytes
 
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\ca
+
+[.]
+[..]
+db3a042930b2691f4977d9888d8d08ba420384
+               1 archivos          1.810 bytes
+
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\cb
 
 [.]
 [..]
 8d88df401382b792e2985effd54b8d418b4d1f
                1 archivos            342 bytes
+
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\ce
+
+[.]
+[..]
+6f89ccd6c362a26608e65029cfd9581cfc7979
+d1947549f5ac01b26321706436c30518e226c6
+               2 archivos          1.954 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\d0
 
@@ -524,6 +635,13 @@ e7f2a9fdcc1920377aee6d000761e75d333044
 e3ecab950c2cefd163f88473330a05dc855a7d
                1 archivos            594 bytes
 
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\d6
+
+[.]
+[..]
+ea076e1fa03af21dee96cbbfcf3018d3abb13e
+               1 archivos            151 bytes
+
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\d7
 
 [.]
@@ -531,11 +649,25 @@ e3ecab950c2cefd163f88473330a05dc855a7d
 5d43462b963b4790aef05fbf9ea1430af564c7
                1 archivos            151 bytes
 
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\db
+
+[.]
+[..]
+1db0cd69f2b87ef7c99ceff87f8c4d55159b56
+               1 archivos            213 bytes
+
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\df
 
 [.]
 [..]
 ce53ea7bf75a9ebd429648bdcee29895067998
+               1 archivos            155 bytes
+
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\e0
+
+[.]
+[..]
+3312df3c89171b0e250ceef37e00ef6cf3f27f
                1 archivos            155 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\e1
@@ -552,12 +684,27 @@ ce53ea7bf75a9ebd429648bdcee29895067998
 78b98b725eb16ea434a33577d4f56f10a31864
                1 archivos            156 bytes
 
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\e5
+
+[.]
+[..]
+11df15700576863bd071bc2b79c0e060016451
+               1 archivos             72 bytes
+
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\e6
 
 [.]
 [..]
 9de29bb2d1d6434b8b29ae775ad8c2e48c5391
                1 archivos             15 bytes
+
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\e9
+
+[.]
+[..]
+1bcd82b0b01634ca08b6b2d0cf3c4bfd47d458
+e9e56435c29339c457a79aa7cb1a024c34d8cd
+               2 archivos            377 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\ea
 
@@ -595,6 +742,14 @@ f5dc68cd1f995b41bc613d5b936da9b229c758
 4631256e2d2217eb2c0166f145a12651f014b2
                1 archivos            132 bytes
 
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\f6
+
+[.]
+[..]
+794c53bd238603225093f39ce156d4d0f6201b
+dd2b4a855281538969477890f47bd46a317c2a
+               2 archivos          2.130 bytes
+
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\f7
 
 [.]
@@ -609,6 +764,13 @@ fecb608b50af6e3714dead5247c86197d4c711
 1642623fd50dc447868892911e1dfe05f64a00
 5f57fc518ceab8b4a0a99aaf20b5d48e96aabc
                2 archivos          2.178 bytes
+
+ Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\f9
+
+[.]
+[..]
+937eca746d657b08e0989e97644310b50e7d84
+               1 archivos             68 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\.git\objects\fa
 
@@ -679,7 +841,7 @@ analisis_inventario_index.css      analisis_inventario_procesar.css
 analisis_inventario_reportes.css   dashboard.css
 gestion_incidencias_cargar.css     gestion_incidencias_index.css
 gestion_incidencias_procesar.css   gestion_incidencias_reportes.css
-              10 archivos          3.433 bytes
+              10 archivos          2.826 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\assets\js
 
@@ -689,7 +851,7 @@ analisis_inventario_index.js      analisis_inventario_procesar.js
 analisis_inventario_reportes.js   dashboard.js
 gestion_incidencias_cargar.js     gestion_incidencias_index.js
 gestion_incidencias_procesar.js   gestion_incidencias_reportes.js
-              10 archivos         24.466 bytes
+              10 archivos         23.160 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\config
 
@@ -702,12 +864,13 @@ gestion_incidencias_procesar.js   gestion_incidencias_reportes.js
 IncidentBatchController.php      IncidentProcessController.php
 IncidentReportController.php     InventoryBatchController.php
 InventoryProcessController.php   InventoryReportController.php
-               6 archivos         19.418 bytes
+               6 archivos         17.802 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\db
 
-[.]   [..]  [old] 
-               0 archivos              0 bytes
+[.]                       [..]                      db_altair_2260307-1.sql
+[old]                     
+               1 archivos      4.985.348 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\db\old
 
@@ -720,7 +883,7 @@ InventoryProcessController.php   InventoryReportController.php
 IncidentBatchModel.php      IncidentProcessModel.php
 IncidentReportModel.php     InventoryBatchModel.php
 InventoryProcessModel.php   InventoryReportModel.php
-               6 archivos         13.992 bytes
+               6 archivos         12.183 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\views
 
@@ -744,7 +907,7 @@ sidebar_gestion.php    topnav.php
 
 [.]            [..]           cargar.php     index.php      procesar.php
 reportes.php   
-               4 archivos         21.673 bytes
+               4 archivos         20.663 bytes
 
  Directorio de C:\xampp\htdocs\altair.amarellus.com\views\modules\gestion_incidencias
 
@@ -753,5 +916,5 @@ reportes.php
                4 archivos         25.600 bytes
 
      Total de archivos en la lista:
-             167 archivos        207.958 bytes
-             316 dirs  709.615.149.056 bytes libres
+             203 archivos      6.765.080 bytes
+             379 dirs  708.804.427.776 bytes libres
