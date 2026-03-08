@@ -1,8 +1,8 @@
 /**
  * Modulo: Análisis de Inventario
  * Archivo: assets/js/analisis_inventario_reportes.js
- * Proposito: Gestión de grid dinámica con vaciado instantáneo y barra de progreso.
- * Version: 1.1.0 - Corrección de barra de progreso y manejo de errores de respuesta.
+ * Proposito: Gestión de grid dinámica, filtros y barra de progreso. Se asegura la limpieza visual total tras la eliminación de datos.
+ * Version: 1.1.3 - Refresco automático tras limpieza y barra de progreso corregida.
  */
 
 let paginaActual = 1;
@@ -43,7 +43,7 @@ function actualizarGridReporte() {
                     <td class="text-center">${row.inv2}</td><td class="text-center">${row.ebay2}</td>
                     <td class="text-center bg-light">${row.disc_inv1}</td><td class="text-center bg-light">${row.disc_inv2}</td>
                     <td class="text-center"><span class="badge bg-dark">${row.estado}</span></td>
-                    <td>${row.causa}</td>
+                    <td class="text-center">${row.causa}</td>
                     <td class="text-center pe-3 ${colorP}">${row.prioridad}</td>
                 </tr>`;
             });
@@ -52,15 +52,13 @@ function actualizarGridReporte() {
             html = '<tr><td colspan="10" class="text-center py-5 text-muted">No hay datos procesados en el reporte.</td></tr>';
         }
         tbody.innerHTML = html;
-    }).catch(err => {
-        console.error("Error en grid:", err);
-    });
+    }).catch(err => { console.error("Error cargando grid:", err); });
 }
 
 function generarReporteDiscrepancias() {
     let timerInterval;
     Swal.fire({
-        title: 'Analizando Inventario...',
+        title: 'Generando Análisis...',
         html: `<div class="progress" style="height:25px;"><div id="pb-sp" class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:0%">0%</div></div>`,
         allowOutsideClick: false,
         didOpen: () => {
@@ -72,41 +70,34 @@ function generarReporteDiscrepancias() {
 
             let fd = new FormData(); fd.append('action', 'generar_reporte');
             fetch('controllers/InventoryReportController.php', { method: 'POST', body: fd })
-            .then(r => r.json())
-            .then(data => {
+            .then(r => r.json()).then(data => {
                 clearInterval(timerInterval);
                 if(data.status === 'success') {
                     bar.style.width = '100%'; bar.innerText = '100%';
                     setTimeout(() => { Swal.fire('Éxito', 'Reporte generado.', 'success'); actualizarGridReporte(); }, 500);
-                } else {
-                    Swal.fire('Error', 'No se pudo procesar.', 'error');
                 }
-            }).catch(() => {
-                clearInterval(timerInterval);
-                Swal.fire('Error', 'Respuesta inesperada del servidor.', 'error');
-            });
+            }).catch(() => { clearInterval(timerInterval); Swal.fire('Error', 'Respuesta inesperada.', 'error'); });
         }
     });
 }
 
 function limpiarReporte() {
     Swal.fire({
-        title: '¿Desea limpiar el reporte?',
-        text: "Se borrarán los datos de la grid y la base de datos.",
+        title: '¿Limpiar reporte?',
+        text: "Se vaciará la grid y la base de datos.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
-        confirmButtonText: 'Sí, limpiar',
-        cancelButtonText: 'Cancelar'
+        confirmButtonText: 'Sí, limpiar'
     }).then(r => {
         if(r.isConfirmed){
             let fd = new FormData(); fd.append('action', 'limpiar_reporte');
             fetch('controllers/InventoryReportController.php', { method: 'POST', body: fd })
             .then(r => r.json()).then(data => {
                 if(data.status === 'success') {
-                    document.getElementById('tbody_reporte').innerHTML = '<tr><td colspan="10" class="text-center py-5 text-muted">No hay datos procesados en el reporte.</td></tr>';
-                    document.getElementById('btnExportar').disabled = true;
-                    Swal.fire('Limpiado', 'El reporte ha sido eliminado.', 'success');
+                    paginaActual = 1;
+                    actualizarGridReporte();
+                    Swal.fire('Vaciado', 'El reporte ha sido eliminado.', 'success');
                 }
             });
         }
@@ -121,8 +112,7 @@ function exportarReporte(formato) {
 
     Swal.fire({
         icon: 'info',
-        title: 'Preparando archivo...',
-        text: 'Su descarga comenzará en unos segundos.',
+        title: 'Generando archivo...',
         timer: 2000,
         showConfirmButton: false,
         didOpen: () => { Swal.showLoading(); }

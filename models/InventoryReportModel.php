@@ -2,8 +2,8 @@
 /**
  * Modulo: Análisis de Inventario
  * Archivo: models/InventoryReportModel.php
- * Proposito: Gestionar la obtención de datos para reportes. Incluye cálculos de porcentajes para indicadores y filtros específicos por estado para el reporte gerencial.
- * Version: 1.1.0 - Inclusión de porcentajes y filtros de alerta para Word.
+ * Proposito: Gestión de datos de discrepancias. Incluye lógica para identificar reposiciones (incrementos de stock) y generar indicadores estadísticos para el reporte gerencial.
+ * Version: 1.1.3 - Inclusión de lógica para detección de reposición y resumen de estados.
  */
 
 if(!class_exists('Conexion')) {

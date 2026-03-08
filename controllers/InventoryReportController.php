@@ -2,8 +2,8 @@
 /**
  * Modulo: Análisis de Inventario
  * Archivo: controllers/InventoryReportController.php
- * Proposito: Gestionar la generación del reporte Word Gerencial siguiendo estrictamente el formato corporativo ALTAIR. Elimina registros OK de las tablas de detalle.
- * Version: 1.1.0 - Reporte Word idéntico al formato corporativo y corrección de salida JSON.
+ * Proposito: Exportación corporativa. Genera el reporte Word con Tablas 1 a 5, omitiendo registros OK y formateando SKUs en Excel como texto.
+ * Version: 1.1.3 - Inclusión de Tabla de Reposición y limpieza de búfer para comunicación JSON.
  */
 
 if(!class_exists('InventoryReportModel')) { require_once __DIR__ . "/../models/InventoryReportModel.php"; }
@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
             $oversell = InventoryReportModel::mdlObtenerPorEstado('RIESGO OVERSELL');
             $ventas = InventoryReportModel::mdlObtenerPorEstado('VENTA');
             $noSinc = InventoryReportModel::mdlObtenerPorEstado('DESINCRONIZADO');
+            $reposicion = InventoryReportModel::mdlObtenerPorEstado('REPOSICION');
 
             echo "<html><meta charset='utf-8'><body>";
             echo "<h2 style='text-align:center;'>ESTATUS DE INVENTARIO Y GESTIÓN DE CANALES</h2>";
@@ -57,36 +58,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
             echo "<li><b>RIESGO OVERSELL:</b> Unidades publicadas en eBay cuyo stock en Shopify es 0.</li>";
             echo "<li><b>VENTA:</b> Unidades físicas cuya salida fue confirmada mediante la baja de stock en eBay.</li>";
             echo "<li><b>REPOSICIÓN:</b> Unidades nuevas ingresadas al sistema detectadas como incremento de inventario.</li>";
+            echo "<li><b>DESINCRONIZADO:</b> SKUs con diferencias de paridad entre canales (Excluyendo ventas).</li>";
             echo "<li><b>OK:</b> SKUs en total paridad y sin movimientos en el periodo.</li></ul>";
 
-            // Tabla 2 - Riesgo Oversell
+            // Tablas de detalle (Solo si no es OK)
             echo "<h3>Tabla 2.- ALERTA: RIESGO DE OVERSELL (STOCK AGOTADO)</h3>";
             if(count($oversell) > 0){
-                echo "<table border='1' style='width:100%; border-collapse:collapse;'>";
-                echo "<tr><th>SKU</th><th>Inv Shopify 2</th><th>Inv Ebay 2</th></tr>";
+                echo "<table border='1' style='width:100%; border-collapse:collapse;'><tr><th>SKU</th><th>Inv Shopify 2</th><th>Inv Ebay 2</th></tr>";
                 foreach($oversell as $o) { echo "<tr><td>{$o['sku']}</td><td align='center'>{$o['inv_shopify2']}</td><td align='center'>{$o['inv_ebay2']}</td></tr>"; }
                 echo "</table>";
             } else { echo "<p><i>No hay discrepancias de Riesgo de Oversell en este periodo.</i></p>"; }
 
-            // Tabla 3 - Ventas
             echo "<h3>Tabla 3.- RELACIÓN DE VENTAS CONFORMADAS</h3>";
             if(count($ventas) > 0){
-                echo "<table border='1' style='width:100%; border-collapse:collapse;'>";
-                echo "<tr><th>SKU</th><th>Inv Shp 1</th><th>Eby 1</th><th>Inv Shp 2</th><th>Eby 2</th><th>Vendidos</th></tr>";
+                echo "<table border='1' style='width:100%; border-collapse:collapse;'><tr><th>SKU</th><th>Inv Shp 1</th><th>Eby 1</th><th>Inv Shp 2</th><th>Eby 2</th><th>Vendidos</th></tr>";
                 foreach($ventas as $v) { echo "<tr><td>{$v['sku']}</td><td align='center'>{$v['inv_shopify1']}</td><td align='center'>{$v['inv_ebay1']}</td><td align='center'>{$v['inv_shopify2']}</td><td align='center'>{$v['inv_ebay2']}</td><td align='center'>{$v['disc_inv1']}</td></tr>"; }
                 echo "</table>";
+                echo "<p><b>Análisis de Movimiento:</b> La columna 'Vendidos' refleja las unidades físicas que salieron del inventario.</p>";
             } else { echo "<p><i>No hay registros de ventas conformadas en este periodo.</i></p>"; }
 
-            echo "<h3>Análisis de Movimiento:</h3><p>La columna 'Vendidos' refleja las unidades físicas que salieron del inventario. Esta cifra ha sido normalizada.</p>";
-
-            // Tabla 4 - Desincronizados
             echo "<h3>Tabla 4.- ALERTA: VENTAS NO SINCRONIZADAS</h3>";
             if(count($noSinc) > 0){
-                echo "<table border='1' style='width:100%; border-collapse:collapse;'>";
-                echo "<tr><th>SKU</th><th>Inv Shp 1</th><th>Eby 1</th><th>Inv Shp 2</th><th>Eby 2</th><th>Estado</th></tr>";
+                echo "<table border='1' style='width:100%; border-collapse:collapse;'><tr><th>SKU</th><th>Inv Shp 1</th><th>Eby 1</th><th>Inv Shp 2</th><th>Eby 2</th><th>Estado</th></tr>";
                 foreach($noSinc as $n) { echo "<tr><td>{$n['sku']}</td><td align='center'>{$n['inv_shopify1']}</td><td align='center'>{$n['inv_ebay1']}</td><td align='center'>{$n['inv_shopify2']}</td><td align='center'>{$n['inv_ebay2']}</td><td align='center'>{$n['estado']}</td></tr>"; }
                 echo "</table>";
             } else { echo "<p><i>No hay discrepancias de ventas no sincronizadas en este periodo.</i></p>"; }
+
+            echo "<h3>Tabla 5.- RELACIÓN DE REPOSICIÓN DE INVENTARIO</h3>";
+            if(count($reposicion) > 0){
+                echo "<table border='1' style='width:100%; border-collapse:collapse;'><tr><th>SKU</th><th>Inv Shp 1</th><th>Eby 1</th><th>Inv Shp 2</th><th>Eby 2</th><th>Incremento</th></tr>";
+                foreach($reposicion as $rep) { 
+                    $inc = abs($rep['disc_inv1']);
+                    echo "<tr><td>{$rep['sku']}</td><td align='center'>{$rep['inv_shopify1']}</td><td align='center'>{$rep['inv_ebay1']}</td><td align='center'>{$rep['inv_shopify2']}</td><td align='center'>{$rep['inv_ebay2']}</td><td align='center'>{$inc}</td></tr>"; 
+                }
+                echo "</table>";
+            } else { echo "<p><i>No hay registros de reposición de inventario en este periodo.</i></p>"; }
 
             echo "</body></html>";
         }
@@ -94,9 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
     }
 }
 
-// Lógica POST (Generar, Listar, Limpiar)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
-    // Limpiamos cualquier salida previa para evitar errores JSON
     ob_clean();
     if ($_POST['action'] == 'generar_reporte') { echo json_encode(["status" => InventoryReportModel::mdlGenerarDiscrepancias()]); }
     elseif ($_POST['action'] == 'listar_reporte') {
