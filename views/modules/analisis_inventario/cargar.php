@@ -8,7 +8,7 @@
 
 require_once "controllers/InventoryBatchController.php";
 
-// Se obtiene la información del último lote registrado en la tabla 'inventory_batches' [cite: 1]
+// Se obtiene la información del último lote registrado en la tabla 'inventory_batches'
 $ultimaCarga = InventoryBatchController::ctrObtenerUltimaCarga();
 ?>
 
@@ -30,7 +30,7 @@ $ultimaCarga = InventoryBatchController::ctrObtenerUltimaCarga();
                     <p class="text-muted small">Fecha de procesamiento: <?php echo date("d/m/Y H:i A", strtotime($ultimaCarga['created_at'])); ?></p>
                 </div>
 
-                <h6 class="fw-bold mb-3 text-uppercase small" style="letter-spacing: 1px;">Archivos en servidor (C:\TEMP):</h6>
+                <h6 class="fw-bold mb-3 text-uppercase small" style="letter-spacing: 1px;">Archivos en servidor (/uploads):</h6>
                 
                 <div class="row g-3">
                     <div class="col-md-3">
@@ -107,12 +107,12 @@ $ultimaCarga = InventoryBatchController::ctrObtenerUltimaCarga();
             </div>
             
             <div class="modal-body p-4">
-                <form id="frmCargaArchivos">
+                <form id="frmCargaArchivos" enctype="multipart/form-data">
                     
                     <div class="mb-4">
                         <label for="txt_nombre_carga" class="form-label fw-bold">Nombre del registro / Lote <span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-lg" id="txt_nombre_carga" name="batch_name" placeholder="Ej: Inventario_Marzo_2026">
-                        <div class="form-text text-muted">Este nombre se usará para crear la carpeta física con el prefijo "inv-".</div>
+                        <div class="form-text text-muted">Los archivos se alojarán de forma segura en la carpeta /uploads del servidor.</div>
                     </div>
 
                     <hr class="my-4">
@@ -123,7 +123,7 @@ $ultimaCarga = InventoryBatchController::ctrObtenerUltimaCarga();
                             <div class="input-group">
                                 <button class="btn btn-success" type="button" onclick="document.getElementById('file_shopify1').click()">Buscar</button>
                                 <input type="text" class="form-control bg-white" id="display_shopify1" placeholder="Seleccionar..." readonly>
-                                <input type="file" id="file_shopify1" class="d-none" accept=".csv" onchange="actualizarDisplay('file_shopify1', 'display_shopify1')">
+                                <input type="file" id="file_shopify1" name="file_shopify1" class="d-none" accept=".csv" onchange="actualizarDisplay('file_shopify1', 'display_shopify1')">
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -131,7 +131,7 @@ $ultimaCarga = InventoryBatchController::ctrObtenerUltimaCarga();
                             <div class="input-group">
                                 <button class="btn btn-danger" type="button" onclick="document.getElementById('file_ebay1').click()">Buscar</button>
                                 <input type="text" class="form-control bg-white" id="display_ebay1" placeholder="Seleccionar..." readonly>
-                                <input type="file" id="file_ebay1" class="d-none" accept=".csv" onchange="actualizarDisplay('file_ebay1', 'display_ebay1')">
+                                <input type="file" id="file_ebay1" name="file_ebay1" class="d-none" accept=".csv" onchange="actualizarDisplay('file_ebay1', 'display_ebay1')">
                             </div>
                         </div>
                     </div>
@@ -142,7 +142,7 @@ $ultimaCarga = InventoryBatchController::ctrObtenerUltimaCarga();
                             <div class="input-group">
                                 <button class="btn btn-primary" type="button" onclick="document.getElementById('file_shopify2').click()">Buscar</button>
                                 <input type="text" class="form-control bg-white" id="display_shopify2" placeholder="Seleccionar..." readonly>
-                                <input type="file" id="file_shopify2" class="d-none" accept=".csv" onchange="actualizarDisplay('file_shopify2', 'display_shopify2')">
+                                <input type="file" id="file_shopify2" name="file_shopify2" class="d-none" accept=".csv" onchange="actualizarDisplay('file_shopify2', 'display_shopify2')">
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -150,7 +150,7 @@ $ultimaCarga = InventoryBatchController::ctrObtenerUltimaCarga();
                             <div class="input-group">
                                 <button class="btn btn-warning fw-bold text-dark" type="button" onclick="document.getElementById('file_ebay2').click()">Buscar</button>
                                 <input type="text" class="form-control bg-white" id="display_ebay2" placeholder="Seleccionar..." readonly>
-                                <input type="file" id="file_ebay2" class="d-none" accept=".csv" onchange="actualizarDisplay('file_ebay2', 'display_ebay2')">
+                                <input type="file" id="file_ebay2" name="file_ebay2" class="d-none" accept=".csv" onchange="actualizarDisplay('file_ebay2', 'display_ebay2')">
                             </div>
                         </div>
                     </div>

@@ -30,20 +30,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $clean_name = preg_replace('/[^a-zA-Z0-9_-]/', '_', $batch_name);
         $folder_name = "inv-" . $clean_name; 
         
-        $base_dir = "C:\\TEMP";
-        $target_dir = $base_dir . "\\" . $folder_name;
+        // Cambio de ruta: De C:\TEMP a carpeta /uploads relativa al servidor
+        $base_dir = __DIR__ . "/../uploads";
+        $target_dir = $base_dir . "/" . $folder_name;
 
-        if (!file_exists($base_dir)) { mkdir($base_dir, 0777, true); }
-        if (!file_exists($target_dir)) { mkdir($target_dir, 0777, true); }
+        // Creación de directorios con permisos estándar 0755
+        if (!file_exists($base_dir)) { mkdir($base_dir, 0755, true); }
+        if (!file_exists($target_dir)) { mkdir($target_dir, 0755, true); }
 
         /**
          * RENOMBRADO ESTÁNDAR DE ARCHIVOS:
          * Se aplica el formato [proveedor]_[versión]_ para todos los archivos.
          */
-        $path_shopify1 = $target_dir . "\\shopify_1_" . basename($_FILES["file_shopify1"]["name"]);
-        $path_ebay1    = $target_dir . "\\ebay_1_" . basename($_FILES["file_ebay1"]["name"]);
-        $path_shopify2 = $target_dir . "\\shopify_2_" . basename($_FILES["file_shopify2"]["name"]);
-        $path_ebay2    = $target_dir . "\\ebay_2_" . basename($_FILES["file_ebay2"]["name"]);
+        $path_shopify1 = $target_dir . "/shopify_1_" . basename($_FILES["file_shopify1"]["name"]);
+        $path_ebay1    = $target_dir . "/ebay_1_" . basename($_FILES["file_ebay1"]["name"]);
+        $path_shopify2 = $target_dir . "/shopify_2_" . basename($_FILES["file_shopify2"]["name"]);
+        $path_ebay2    = $target_dir . "/ebay_2_" . basename($_FILES["file_ebay2"]["name"]);
 
         $move1 = move_uploaded_file($_FILES["file_shopify1"]["tmp_name"], $path_shopify1);
         $move2 = move_uploaded_file($_FILES["file_ebay1"]["tmp_name"], $path_ebay1);
@@ -63,12 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             $respuesta = InventoryBatchModel::mdlRegistrarLote("inventory_batches", $datos);
             
             if ($respuesta == "ok") {
-                echo json_encode(["status" => "success", "message" => "Archivos estandarizados y guardados en $target_dir."]);
+                echo json_encode(["status" => "success", "message" => "Archivos estandarizados y guardados en servidor."]);
             } else {
                 echo json_encode(["status" => "error", "message" => "Error al registrar en la base de datos."]);
             }
         } else {
-            echo json_encode(["status" => "error", "message" => "Error al mover los archivos a C:\\TEMP. Verifique permisos de escritura."]);
+            echo json_encode(["status" => "error", "message" => "Error al mover los archivos a /uploads. Verifique permisos de escritura."]);
         }
         exit;
     }

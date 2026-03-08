@@ -23,7 +23,7 @@ function verNombreArchivo(nombreArchivo) {
 function eliminarCargaActual(id_carga) {
     Swal.fire({
         title: '¿Confirmar eliminación?',
-        text: "Se borrarán los registros y los archivos físicos en C:\\TEMP de forma permanente.",
+        text: "Se borrarán los registros y los archivos físicos en el servidor de forma permanente.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
@@ -103,7 +103,7 @@ async function validarYGuardar() {
 
     Swal.fire({
         title: 'Subiendo archivos...',
-        text: 'Por favor, no cierre la ventana mientras se procesa el lote.',
+        text: 'Por favor, no cierre la ventana mientras se procesan los archivos en el servidor.',
         allowOutsideClick: false,
         didOpen: () => { Swal.showLoading(); }
     });
