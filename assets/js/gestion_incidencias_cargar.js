@@ -19,7 +19,8 @@ function verNombreArchivo(nombreArchivo) {
 function eliminarCargaActual(id_carga) {
     Swal.fire({
         title: '¿Estás seguro?',
-        text: "Se eliminarán los archivos de C:\\TEMP, la carpeta y el registro de la base de datos permanentemente.",
+        // Se actualiza el mensaje para referenciar el servidor en lugar de rutas locales
+        text: "Se eliminarán los archivos del servidor y el registro de la base de datos permanentemente.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',

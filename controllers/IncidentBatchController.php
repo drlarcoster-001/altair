@@ -26,15 +26,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $batch_name = trim($_POST['batch_name']);
         $folder_name = preg_replace('/[^a-zA-Z0-9_-]/', '_', $batch_name);
         
-        $base_dir = "C:\\TEMP";
-        $target_dir = $base_dir . "\\" . $folder_name;
+        // Cambio de ruta: De C:\TEMP a carpeta /uploads relativa al servidor
+        $base_dir = __DIR__ . "/../uploads";
+        $target_dir = $base_dir . "/" . $folder_name;
 
-        if (!file_exists($base_dir)) { mkdir($base_dir, 0777, true); }
-        if (!file_exists($target_dir)) { mkdir($target_dir, 0777, true); }
+        // Creación de directorios con permisos estándar 0755
+        if (!file_exists($base_dir)) { mkdir($base_dir, 0755, true); }
+        if (!file_exists($target_dir)) { mkdir($target_dir, 0755, true); }
 
-        $path_shopify = $target_dir . "\\" . basename($_FILES["file_shopify"]["name"]);
-        $path_ced = $target_dir . "\\" . basename($_FILES["file_cedcommerce"]["name"]);
-        $path_ebay = $target_dir . "\\" . basename($_FILES["file_ebay"]["name"]);
+        $path_shopify = $target_dir . "/" . basename($_FILES["file_shopify"]["name"]);
+        $path_ced = $target_dir . "/" . basename($_FILES["file_cedcommerce"]["name"]);
+        $path_ebay = $target_dir . "/" . basename($_FILES["file_ebay"]["name"]);
 
         $move1 = move_uploaded_file($_FILES["file_shopify"]["tmp_name"], $path_shopify);
         $move2 = move_uploaded_file($_FILES["file_cedcommerce"]["tmp_name"], $path_ced);
@@ -50,12 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 
             $respuesta = IncidentBatchModel::mdlRegistrarLote("incident_batches", $datos);
             if ($respuesta == "ok") {
-                echo json_encode(["status" => "success", "message" => "Archivos guardados correctamente."]);
+                echo json_encode(["status" => "success", "message" => "Archivos guardados correctamente en el servidor."]);
             } else {
                 echo json_encode(["status" => "error", "message" => "Error al guardar en la BD."]);
             }
         } else {
-            echo json_encode(["status" => "error", "message" => "Error al mover los archivos a C:\\TEMP."]);
+            echo json_encode(["status" => "error", "message" => "Error al mover los archivos a la carpeta /uploads."]);
         }
         exit;
     }
@@ -68,14 +70,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $carga = IncidentBatchModel::mdlObtenerCargaPorId("incident_batches", $id);
         
         if ($carga) {
-            // 2. Borramos los 3 archivos físicos de C:\TEMP usando unlink()
+            // 2. Borramos los 3 archivos físicos del servidor usando unlink()
             if (file_exists($carga['shopify_file_path'])) unlink($carga['shopify_file_path']);
             if (file_exists($carga['cedcommerce_file_path'])) unlink($carga['cedcommerce_file_path']);
             if (file_exists($carga['ebay_file_path'])) unlink($carga['ebay_file_path']);
 
-            // 3. Borramos la carpeta que los contenía usando rmdir() (dirname obtiene la ruta sin el archivo)
+            // 3. Borramos la carpeta que los contenía usando rmdir()
             $folder = dirname($carga['shopify_file_path']);
-            if (is_dir($folder)) rmdir($folder);
+            if (is_dir($folder)) {
+                $content = array_diff(scandir($folder), array('.', '..'));
+                if (empty($content)) { rmdir($folder); }
+            }
 
             // 4. Borramos el registro de la Base de Datos
             $respuesta = IncidentBatchModel::mdlEliminarLote("incident_batches", $id);

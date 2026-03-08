@@ -29,7 +29,7 @@ $ultimaCarga = IncidentBatchController::ctrObtenerUltimaCarga();
                     <p class="text-muted small">Fecha de carga: <?php echo date("d/m/Y H:i A", strtotime($ultimaCarga['created_at'])); ?></p>
                 </div>
 
-                <h6 class="fw-bold mb-3">Archivos subidos:</h6>
+                <h6 class="fw-bold mb-3">Archivos subidos al servidor:</h6>
                 
                 <div class="row g-3">
                     <div class="col-md-4">
@@ -102,11 +102,11 @@ $ultimaCarga = IncidentBatchController::ctrObtenerUltimaCarga();
             </div>
             
             <div class="modal-body p-4">
-                <form id="frmCargaArchivos">
+                <form id="frmCargaArchivos" enctype="multipart/form-data">
                     
                     <div class="mb-4">
                         <label for="txt_nombre_carga" class="form-label fw-bold">Nombre del registro de la carga <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-lg" id="txt_nombre_carga" placeholder="Ej: Comparativa Semana 1">
+                        <input type="text" class="form-control form-control-lg" id="txt_nombre_carga" name="batch_name" placeholder="Ej: Comparativa Semana 1">
                     </div>
 
                     <hr class="mb-4">
@@ -116,7 +116,7 @@ $ultimaCarga = IncidentBatchController::ctrObtenerUltimaCarga();
                         <div class="input-group">
                             <button class="btn btn-success px-4" type="button" onclick="document.getElementById('file_shopify').click()">Buscar</button>
                             <input type="text" class="form-control bg-white" id="display_shopify" placeholder="Ningún archivo seleccionado..." readonly>
-                            <input type="file" id="file_shopify" class="d-none" accept=".csv" onchange="actualizarDisplay('file_shopify', 'display_shopify')">
+                            <input type="file" id="file_shopify" name="file_shopify" class="d-none" accept=".csv" onchange="actualizarDisplay('file_shopify', 'display_shopify')">
                         </div>
                     </div>
 
@@ -125,7 +125,7 @@ $ultimaCarga = IncidentBatchController::ctrObtenerUltimaCarga();
                         <div class="input-group">
                             <button class="btn btn-primary px-4" type="button" onclick="document.getElementById('file_cedcommerce').click()">Buscar</button>
                             <input type="text" class="form-control bg-white" id="display_cedcommerce" placeholder="Ningún archivo seleccionado..." readonly>
-                            <input type="file" id="file_cedcommerce" class="d-none" accept=".csv" onchange="actualizarDisplay('file_cedcommerce', 'display_cedcommerce')">
+                            <input type="file" id="file_cedcommerce" name="file_cedcommerce" class="d-none" accept=".csv" onchange="actualizarDisplay('file_cedcommerce', 'display_cedcommerce')">
                         </div>
                     </div>
 
@@ -134,7 +134,7 @@ $ultimaCarga = IncidentBatchController::ctrObtenerUltimaCarga();
                         <div class="input-group">
                             <button class="btn btn-danger px-4" type="button" onclick="document.getElementById('file_ebay').click()">Buscar</button>
                             <input type="text" class="form-control bg-white" id="display_ebay" placeholder="Ningún archivo seleccionado..." readonly>
-                            <input type="file" id="file_ebay" class="d-none" accept=".csv" onchange="actualizarDisplay('file_ebay', 'display_ebay')">
+                            <input type="file" id="file_ebay" name="file_ebay" class="d-none" accept=".csv" onchange="actualizarDisplay('file_ebay', 'display_ebay')">
                         </div>
                     </div>
 
